@@ -1,36 +1,35 @@
-const config = require('./config.json');
-const Discord = require('discord.js');
+const { Client, Collection } = require("discord.js");
+const { TOKEN } = require("./config");
+const client = new Client({ disableEveryone: true });
+const fs = require("fs");
 
-const bot = new Discord.Client({disableEveryone: true});
+require("./util/functions")(client);
+client.mongoose = require("./util/mongoose");
+client.commands = new Collection();
 
-bot.on('ready', async () => {
-    console.log(`${bot.user.username} est en ligne !`);
-    bot.user.setActivity('Programmation version 1.0 en cours !');
-});
-bot.on('message', async message => {
-    if (message.author.bot) return;
-    if (message.channel.type === 'dm') return;
-
-    let prefix = config.prefix;
-    let messageArray = message.content.split(" ");
-    let command = messageArray[0];
-    let args = messageArray.slice(1);
-
-    if (command === `${prefix}info`) ;
-    {
-        let botIcon = bot.user.displayAvatarURL;
-        let embed = new Discord.RichEmbed()
-            .setDescription(`Informations sur le bot`)
-            .setColor(`#dc143c`)
-            .setThumbnail(botIcon)
-            .addField(`Nom du bot`, bot.user.username)
-            .addField(`Créer par`, bot.user.author)
-            .addField(`Créer le`, bot.user.createdAt)
-            .addField(`Commandes`, '------------')
-            .addField(`${prefix}info`, 'Renvoie des informations sur le bot')
-
-        return message.channel.send(embed);
-    }
+fs.readdir("./events/", (err, files) => {
+  if (err) return console.error;
+  files.forEach(file => {
+    if (!file.endsWith(".js")) return;
+    const evt = require(`./events/${file}`);
+    const evtName = file.split(".")[0];
+    console.log(`Loaded event '${evtName}'`);
+    client.on(evtName, evt.bind(null, client));
+  });
 });
 
-bot.login(config.token);
+fs.readdir("./commands/", async (err, files) => {
+  if (err) return console.error;
+  files.forEach(file => {
+    if (!file.endsWith(".js")) return;
+    const props = require(`./commands/${file}`);
+    const cmdName = file.split(".")[0];
+    console.log(`Loaded command '${cmdName}'`);
+    client.commands.set(cmdName, props);
+  });
+});
+
+client.mongoose.init();
+client.login(TOKEN);
+client.on("error", console.error);
+client.on("warn", console.warn);
