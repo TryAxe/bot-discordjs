@@ -1,0 +1,12 @@
+{
+  "name": "bottest",
+  "version": "0.1.0",
+  "description": "Version 1.0",
+  "main": "main.js",
+  "repository": "https://github.com/TryAxe/bot-discordjs.git",
+  "author": "TryAxe ",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "discordjs/discord.js"
+  }
+}
