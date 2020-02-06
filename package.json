@@ -7,11 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Guyon Valentin",
+  "author": "TryAxe",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "discordjs/discord.js",
     "save": "^2.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": "https://github.com/TryAxe/bot-discordjs.git"
 }
